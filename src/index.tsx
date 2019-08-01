@@ -1,12 +1,22 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import { ThemeProvider } from '@material-ui/styles'
+import { configure } from 'mobx'
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import theme from './utils/theme'
+import App from './App'
+import * as serviceWorker from './serviceWorker'
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+// Mobx config
+configure({ enforceActions: 'observed' })
+
+ReactDOM.render(
+  <ThemeProvider theme={theme}>
+    <CssBaseline />
+    <App />
+  </ThemeProvider>,
+  document.getElementById('root'),
+)
+
+serviceWorker.unregister()

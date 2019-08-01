@@ -1,26 +1,47 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useContext } from 'react'
+import Container from '@material-ui/core/Container'
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
+import { Router, Route, Switch } from 'react-router-dom'
+import { observer } from 'mobx-react'
 
-const App: React.FC = () => {
+import * as ROUTES from 'constants/routes'
+import { history } from 'utils/history'
+import rootStore from 'stores/rootStore'
+import Header from 'components/layout/Header'
+import PrivateRoute from 'components/ui/PrivateRoute'
+
+// Routes
+import Home from 'screens/Home'
+import Login from 'screens/Login'
+
+// Styles
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    mainContainer: {
+      padding: theme.spacing(3, 0),
+    },
+  }),
+)
+
+// Component
+const App: React.FC = observer(() => {
+  const classes = useStyles()
+  const { auth: authStore } = useContext(rootStore)
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    <Router history={history}>
+      <Header isLoggedIn={authStore.isLoggedIn} onLogout={authStore.logout} />
 
-export default App;
+      <main className={classes.mainContainer}>
+        <Container>
+          <Switch>
+            <PrivateRoute path={ROUTES.HOME} exact component={Home} />
+            <Route path={ROUTES.SIGN_IN} exact component={Login} />
+          </Switch>
+        </Container>
+      </main>
+    </Router>
+  )
+})
+
+export default App
