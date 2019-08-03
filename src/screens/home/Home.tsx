@@ -5,10 +5,6 @@ import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import FormControl from '@material-ui/core/FormControl'
-import Select from '@material-ui/core/Select'
-import MenuItem from '@material-ui/core/MenuItem'
-import TextField from '@material-ui/core/TextField'
 import HowToVoteIcon from '@material-ui/icons/HowToVote'
 
 import * as ROUTES from 'constants/routes'
@@ -45,6 +41,18 @@ const Home: React.FC = observer(() => {
       <Grid container alignItems="center" justify="center">
         <Grid item>
           <CircularProgress />
+        </Grid>
+      </Grid>
+    )
+  }
+
+  if (store.ideas.hasError) {
+    return (
+      <Grid container alignItems="center" justify="center">
+        <Grid item>
+          <Typography variant="h4" component="h2" color="error">
+            {store.ideas.error}
+          </Typography>
         </Grid>
       </Grid>
     )

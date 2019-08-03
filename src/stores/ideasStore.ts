@@ -25,21 +25,26 @@ export class IdeasStore {
   getOwnIdeas() {
     this.state = 'pending'
 
-    IdeasService.getOwnIdeas().then(
-      ({ data }) => {
-        const ideas: Idea[] = data
+    IdeasService.getOwnIdeas()
+      .then(
+        ({ data }) => {
+          const ideas: Idea[] = data
 
-        runInAction(() => {
-          this.ideas = ideas
-          this.state = 'done'
-        })
-      },
-      error => {
-        runInAction(() => {
-          this.error = error
-          this.state = 'error'
-        })
-      },
-    )
+          runInAction(() => {
+            this.ideas = ideas
+            this.error = undefined
+            this.state = 'done'
+          })
+        },
+        error => {
+          runInAction(() => {
+            this.error = error
+            this.state = 'error'
+          })
+        },
+      )
+      .catch(error => {
+        console.log(error)
+      })
   }
 }
