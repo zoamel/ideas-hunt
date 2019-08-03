@@ -45,8 +45,8 @@ export class AuthStore {
   login(credentials: LoginPayload) {
     this.state = 'pending'
 
-    UsersService.login(credentials)
-      .then(({ data }) => {
+    UsersService.login(credentials).then(
+      ({ data }) => {
         const { token } = data
 
         runInAction(() => {
@@ -56,8 +56,8 @@ export class AuthStore {
         })
 
         history.push('/')
-      })
-      .catch(error => {
+      },
+      error => {
         let errorMessage: string
 
         if (isString(error)) {
@@ -70,7 +70,8 @@ export class AuthStore {
           this.state = 'error'
           this.error = errorMessage
         })
-      })
+      },
+    )
   }
 
   @action.bound

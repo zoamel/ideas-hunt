@@ -11,7 +11,7 @@ import Header from 'components/layout/Header'
 import PrivateRoute from 'components/ui/PrivateRoute'
 
 // Routes
-import Home from 'screens/Home'
+import Home from 'screens/home/Home'
 import Login from 'screens/Login'
 
 // Styles

@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios'
 
+import { rootStore } from 'stores/rootStore'
 import { AUTH_TOKEN_NAME } from 'constants/config'
 
 function onRequest(config: AxiosRequestConfig) {
@@ -19,6 +20,10 @@ function onResponseSuccess(response: AxiosResponse) {
 function onResponseError(error: AxiosError) {
   // This reject is needed in order to try/catch to work properly
   if (error.response) {
+    if (error.response.status === 403) {
+      rootStore.auth.logout()
+    }
+
     return Promise.reject(error.response)
   }
 
