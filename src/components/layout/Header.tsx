@@ -6,9 +6,7 @@ import Button from '@material-ui/core/Button'
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
 import { observer } from 'mobx-react'
 
-import * as ROUTES from '../../constants/routes'
 import logoImage from '../../assets/logo.png'
-import AdapterLink from '../ui/AdapterLink'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

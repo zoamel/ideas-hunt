@@ -1,7 +1,9 @@
-import { observable, action, computed, reaction, runInAction } from 'mobx'
+import { computed, flow, observable } from 'mobx'
 
-import { Idea } from 'interfaces/ideas'
+import { Idea, NewIdeaPayload } from 'interfaces/ideas'
 import { IdeasService } from 'services/ideasService'
+import { history } from 'utils/history'
+import * as ROUTES from 'constants/routes'
 import { RootStore } from './rootStore'
 
 export class IdeasStore {
@@ -21,30 +23,34 @@ export class IdeasStore {
     return this.state === 'error'
   }
 
-  @action
-  getOwnIdeas() {
+  getOwnIdeas = flow(function*(this: IdeasStore) {
     this.state = 'pending'
 
-    IdeasService.getOwnIdeas()
-      .then(
-        ({ data }) => {
-          const ideas: Idea[] = data
+    try {
+      const { data } = yield IdeasService.getOwnIdeas()
 
-          runInAction(() => {
-            this.ideas = ideas
-            this.error = undefined
-            this.state = 'done'
-          })
-        },
-        error => {
-          runInAction(() => {
-            this.error = error
-            this.state = 'error'
-          })
-        },
-      )
-      .catch(error => {
-        console.log(error)
-      })
-  }
+      this.ideas = data
+      this.error = undefined
+      this.state = 'done'
+    } catch (error) {
+      this.error = error
+      this.state = 'error'
+    }
+  })
+
+  addIdea = flow(function*(this: IdeasStore, idea: NewIdeaPayload) {
+    this.state = 'pending'
+
+    try {
+      yield IdeasService.addIdea(idea)
+
+      this.error = undefined
+      this.state = 'done'
+
+      history.push(ROUTES.HOME)
+    } catch (error) {
+      this.state = 'error'
+      this.error = error
+    }
+  })
 }

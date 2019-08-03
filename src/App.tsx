@@ -12,7 +12,8 @@ import PrivateRoute from 'components/ui/PrivateRoute'
 
 // Routes
 import Home from 'screens/home/Home'
-import Login from 'screens/Login'
+import Login from 'screens/login/Login'
+import AddIdea from 'screens/addIdea/AddIdea'
 
 // Styles
 const useStyles = makeStyles((theme: Theme) =>
@@ -36,6 +37,7 @@ const App: React.FC = observer(() => {
         <Container>
           <Switch>
             <PrivateRoute path={ROUTES.HOME} exact component={Home} />
+            <PrivateRoute path={ROUTES.ADD_IDEA} exact component={AddIdea} />
             <Route path={ROUTES.SIGN_IN} exact component={Login} />
           </Switch>
         </Container>
