@@ -1,15 +1,17 @@
-import { observable, action, computed, reaction, runInAction } from 'mobx'
+import { observable, action, computed, reaction, flow, autorun } from 'mobx'
 import isString from 'lodash/isString'
 import get from 'lodash/get'
 
 import { history } from 'utils/history'
+import * as ROUTES from 'constants/routes'
 import { AUTH_TOKEN_NAME } from 'constants/config'
-import { LoginPayload } from 'interfaces/user'
+import { LoginPayload, User } from 'interfaces/user'
 import { UsersService } from 'services/usersService'
 import { RootStore } from './rootStore'
 
 export class AuthStore {
   @observable token = window.localStorage.getItem(AUTH_TOKEN_NAME)
+  @observable user: User | undefined = undefined
   @observable state: string | undefined = undefined
   @observable error: string | undefined = undefined
 
@@ -19,10 +21,22 @@ export class AuthStore {
       token => {
         if (token) {
           window.localStorage.setItem(AUTH_TOKEN_NAME, token)
+          this.rootStore.user.getUserData()
         } else {
           window.localStorage.removeItem(AUTH_TOKEN_NAME)
         }
       },
+    )
+
+    autorun(
+      reaction => {
+        if (this.isLoggedIn) {
+          this.rootStore.user.getUserData()
+        }
+
+        reaction.dispose()
+      },
+      { delay: 100 },
     )
   }
 
@@ -31,51 +45,44 @@ export class AuthStore {
     return Boolean(this.token)
   }
 
-  @action
-  setToken(token: string) {
-    this.token = token
+  @computed
+  get isPending() {
+    return this.state === 'pending'
   }
 
-  @action
-  clearToken() {
-    this.token = null
+  @computed
+  get hasError() {
+    return this.state === 'error'
   }
 
-  @action
-  login(credentials: LoginPayload) {
+  login = flow(function*(this: AuthStore, credentials: LoginPayload) {
     this.state = 'pending'
 
-    UsersService.login(credentials).then(
-      ({ data }) => {
-        const { token } = data
+    try {
+      const { data } = yield UsersService.login(credentials)
+      const { token } = data
 
-        runInAction(() => {
-          this.setToken(token)
-          this.error = undefined
-          this.state = 'done'
-        })
+      this.token = token
+      this.error = undefined
+      this.state = 'done'
+      history.push(ROUTES.HOME)
+    } catch (error) {
+      let errorMessage: string
 
-        history.push('/')
-      },
-      error => {
-        let errorMessage: string
+      if (isString(error)) {
+        errorMessage = error
+      } else {
+        errorMessage = get(error, 'data.general', 'Something wen wrong')
+      }
 
-        if (isString(error)) {
-          errorMessage = error
-        } else {
-          errorMessage = get(error, 'data.general', 'Something wen wrong')
-        }
-
-        runInAction(() => {
-          this.state = 'error'
-          this.error = errorMessage
-        })
-      },
-    )
-  }
+      this.state = 'error'
+      this.error = errorMessage
+    }
+  })
 
   @action.bound
   logout() {
-    this.clearToken()
+    this.token = null
+    history.push(ROUTES.SIGN_IN)
   }
 }

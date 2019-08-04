@@ -22,11 +22,10 @@ function onResponseError(error: AxiosError) {
   if (error.response) {
     if (error.response.status === 403) {
       rootStore.auth.logout()
+    } else {
+      return Promise.reject(error.response.data)
     }
-
-    return Promise.reject(error.response)
   }
-
   return Promise.reject(error.message)
 }
 

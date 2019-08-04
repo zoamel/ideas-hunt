@@ -9,6 +9,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
 import { Idea } from 'interfaces/ideas'
+import * as ROUTES from 'constants/routes'
 
 //#region Styles
 const useStyles = makeStyles((theme: Theme) =>
@@ -42,7 +43,7 @@ const IdeaCard: React.FC<Props> = observer(({ idea, icon, history }) => {
   const updateAtDate = format(idea.updatedAt, 'YYYY-MM-DD HH:mm')
 
   function handleClick() {
-    console.log('Going to details')
+    history.push(`${ROUTES.SHOW_IDEA_BASE}/${idea.ideaId}`)
   }
 
   return (

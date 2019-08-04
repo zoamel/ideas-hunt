@@ -32,7 +32,7 @@ const Home: React.FC = observer(() => {
 
   useEffect(() => {
     store.ideas.getOwnIdeas()
-
+    store.ideas.clearSelectedIdea()
     // eslint-disable-next-line
   }, [])
 

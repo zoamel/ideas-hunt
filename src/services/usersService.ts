@@ -8,4 +8,7 @@ export const UsersService = {
       password: credentials.password,
     })
   },
+  getUserData() {
+    return httpClient.get('/user')
+  },
 }

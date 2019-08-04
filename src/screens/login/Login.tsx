@@ -56,15 +56,13 @@ const Login: React.FC = observer(() => {
   const classes = useStyles()
   const store = useContext(rootStore)
 
-  const isSubmitting = store.auth.state === 'pending'
-  const hasError = store.auth.state === 'error'
-
   function handleSubmit(
     values: FormValues,
     actions: FormikActions<FormValues>,
   ) {
-    store.auth.login(values)
-    actions.setSubmitting(false)
+    store.auth.login(values).finally(() => {
+      actions.setSubmitting(false)
+    })
   }
 
   return (
@@ -82,7 +80,7 @@ const Login: React.FC = observer(() => {
           validationSchema={validationSchema}
           validateOnBlur={true}
           onSubmit={handleSubmit}
-          render={() => (
+          render={({ isSubmitting }) => (
             <Form className={classes.form}>
               <Field
                 name="email"
@@ -107,7 +105,9 @@ const Login: React.FC = observer(() => {
                 fullWidth
               />
 
-              {hasError && (
+              {isSubmitting && <LinearProgress />}
+
+              {store.auth.hasError && (
                 <div className={classes.errorsContainer}>
                   <Typography
                     variant="subtitle1"
@@ -129,7 +129,6 @@ const Login: React.FC = observer(() => {
               >
                 {isSubmitting ? 'Signing in...' : 'Sign in'}
               </Button>
-              {isSubmitting && <LinearProgress />}
 
               {/* <Grid container>
                 <Grid item>

@@ -10,7 +10,7 @@ export interface Idea {
   updatedAt: string
 }
 
-export interface NewIdeaPayload {
+export interface IdeaPayload {
   title: string
   tagline: string
   description: string
