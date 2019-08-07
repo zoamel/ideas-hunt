@@ -10,7 +10,8 @@ export class IdeasStore {
   @observable ideas: Idea[] = []
   @observable idea: Idea | undefined = undefined
   @observable state: string = 'pending'
-  @observable error: string | undefined = undefined
+  @observable generalError: string | undefined = undefined
+  @observable votingError: string | undefined = undefined
 
   constructor(private rootStore: RootStore) {}
 
@@ -25,8 +26,18 @@ export class IdeasStore {
   }
 
   @computed
-  get hasError() {
-    return this.state === 'error'
+  get isVoting() {
+    return this.state === 'voting'
+  }
+
+  @computed
+  get hasGeneralError() {
+    return this.state === 'generalError'
+  }
+
+  @computed
+  get hasVotingError() {
+    return this.state === 'votingError'
   }
 
   @action.bound
@@ -41,10 +52,10 @@ export class IdeasStore {
       const { data } = yield IdeasService.getOwnIdeas()
 
       this.ideas = data
-      this.error = undefined
+      this.generalError = undefined
       this.state = 'done'
     } catch ({ error }) {
-      this.error = error
+      this.generalError = error
       this.state = 'error'
     }
   })
@@ -55,13 +66,13 @@ export class IdeasStore {
     try {
       yield IdeasService.addIdea(idea)
 
-      this.error = undefined
+      this.generalError = undefined
       this.state = 'done'
 
       history.push(ROUTES.HOME)
     } catch (error) {
       this.state = 'error'
-      this.error = error
+      this.generalError = error
     }
   })
 
@@ -72,10 +83,10 @@ export class IdeasStore {
       const { data } = yield IdeasService.getIdea(ideaId)
 
       this.idea = data
-      this.error = undefined
+      this.generalError = undefined
       this.state = 'done'
     } catch ({ error }) {
-      this.error = error
+      this.generalError = error
       this.state = 'error'
     }
   })
@@ -98,10 +109,10 @@ export class IdeasStore {
         ...ideaPayload,
       } as Idea
 
-      this.error = undefined
+      this.generalError = undefined
       this.state = 'done'
     } catch (error) {
-      this.error = error
+      this.generalError = error
       this.state = 'error'
     }
   })
@@ -113,18 +124,18 @@ export class IdeasStore {
       yield IdeasService.deleteIdea(this.idea!.ideaId)
 
       this.idea = undefined
-      this.error = undefined
+      this.generalError = undefined
       this.state = 'done'
 
       history.push(ROUTES.HOME)
     } catch (error) {
-      this.error = error
+      this.generalError = error
       this.state = 'error'
     }
   })
 
   voteIdea = flow(function*(this: IdeasStore) {
-    this.state = 'saving'
+    this.state = 'voting'
 
     try {
       if (this.idea) {
@@ -139,8 +150,8 @@ export class IdeasStore {
       }
     } catch ({ error }) {
       console.error(error)
-      this.error = error
-      this.state = 'error'
+      this.votingError = error
+      this.state = 'votingError'
     }
   })
 }

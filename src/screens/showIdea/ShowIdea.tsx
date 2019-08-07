@@ -60,12 +60,12 @@ const ShowIdea: React.FC<Props> = observer(({ match }) => {
     )
   }
 
-  if (store.ideas.hasError) {
+  if (store.ideas.hasGeneralError) {
     return (
       <Grid container alignItems="center" justify="center">
         <Grid item>
           <Typography color="error" variant="h5" component="p">
-            {store.ideas.error}
+            {store.ideas.generalError}
           </Typography>
         </Grid>
       </Grid>

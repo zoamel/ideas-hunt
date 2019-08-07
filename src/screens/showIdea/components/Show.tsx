@@ -11,19 +11,22 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp'
+import ThumbUpIcon from '@material-ui/icons/ThumbUp'
 
 import * as ROUTES from 'constants/routes'
 import rootStore from 'stores/rootStore'
 import { Idea } from 'interfaces/ideas'
 import AdapterLink from 'components/ui/AdapterLink'
 import { createStyles, makeStyles, Theme } from '@material-ui/core'
-import Fab from '@material-ui/core/Fab'
 
 //#region Styles
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       paddingTop: theme.spacing(3),
+    },
+    upvoteIcon: {
+      marginLeft: theme.spacing(1),
     },
   }),
 )
@@ -73,7 +76,7 @@ const Show: React.FC<Props> = observer(({ idea, onStartEdit }) => {
               color="secondary"
               to={ROUTES.HOME}
             >
-              Go Back
+              Go to dashboard
             </Button>
           </Grid>
 
@@ -131,23 +134,37 @@ const Show: React.FC<Props> = observer(({ idea, onStartEdit }) => {
 
           {isNotOwner && (
             <Grid item>
-              <Grid container spacing={1} alignItems="center">
+              <Grid container direction="column" spacing={1}>
                 <Grid item>
-                  <Fab
-                    onClick={handleUpvote}
-                    variant="extended"
-                    size="medium"
-                    color="primary"
-                  >
-                    <ArrowDropUpIcon />
-                    Upvote
-                  </Fab>
+                  <Grid container spacing={1} alignItems="center">
+                    <Grid item>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleUpvote}
+                        disabled={store.ideas.isVoting}
+                      >
+                        {store.ideas.isVoting ? 'Voting...' : 'Upvote'}
+                        <ThumbUpIcon
+                          fontSize="small"
+                          className={classes.upvoteIcon}
+                        />
+                      </Button>
+                    </Grid>
+                    <Grid item>
+                      <Typography variant="h5" color="textSecondary">
+                        {idea.voteCount}
+                      </Typography>
+                    </Grid>
+                  </Grid>
                 </Grid>
-                <Grid item>
-                  <Typography variant="h5" color="textSecondary">
-                    {idea.voteCount}
-                  </Typography>
-                </Grid>
+                {store.ideas.hasVotingError && (
+                  <Grid item>
+                    <Typography color="error">
+                      {store.ideas.votingError}
+                    </Typography>
+                  </Grid>
+                )}
               </Grid>
             </Grid>
           )}

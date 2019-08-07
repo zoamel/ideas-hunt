@@ -46,12 +46,12 @@ const Home: React.FC = observer(() => {
     )
   }
 
-  if (store.ideas.hasError) {
+  if (store.ideas.hasGeneralError) {
     return (
       <Grid container alignItems="center" justify="center">
         <Grid item>
           <Typography variant="h4" component="h2" color="error">
-            {store.ideas.error}
+            {store.ideas.generalError}
           </Typography>
         </Grid>
       </Grid>

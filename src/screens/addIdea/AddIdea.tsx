@@ -160,9 +160,9 @@ const AddIdea: React.FC = observer(() => {
 
                 {isSubmitting && <LinearProgress />}
 
-                {store.ideas.hasError && (
+                {store.ideas.hasGeneralError && (
                   <Typography variant="subtitle1" component="p" color="error">
-                    {store.ideas.error}
+                    {store.ideas.generalError}
                   </Typography>
                 )}
 
