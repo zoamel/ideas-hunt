@@ -26,7 +26,12 @@ function onResponseError(error: AxiosError) {
       return Promise.reject(error.response.data)
     }
   }
-  return Promise.reject(error.message)
+
+  if (error.message === 'Network Error') {
+    rootStore.app.displayGlobalError('Network Error')
+  } else {
+    return Promise.reject(error.message)
+  }
 }
 
 const httpClient = () => {

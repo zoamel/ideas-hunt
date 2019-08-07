@@ -15,6 +15,7 @@ import Home from 'screens/home/Home'
 import Login from 'screens/login/Login'
 import AddIdea from 'screens/addIdea/AddIdea'
 import ShowIdea from 'screens/showIdea/ShowIdea'
+import GlobalMessage from './components/ui/GlobalMessage'
 
 // Styles
 const useStyles = makeStyles((theme: Theme) =>
@@ -28,11 +29,17 @@ const useStyles = makeStyles((theme: Theme) =>
 // Component
 const App: React.FC = observer(() => {
   const classes = useStyles()
-  const { auth: authStore } = useContext(rootStore)
+  const { auth: authStore, app: appStore } = useContext(rootStore)
 
   return (
     <Router history={history}>
       <Header isLoggedIn={authStore.isLoggedIn} onLogout={authStore.logout} />
+
+      <GlobalMessage
+        visible={appStore.showGlobalError}
+        message={appStore.errorMessage}
+        onClose={appStore.closeGlobalError}
+      />
 
       <main className={classes.mainContainer}>
         <Container>
