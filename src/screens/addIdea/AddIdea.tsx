@@ -11,7 +11,7 @@ import * as Yup from 'yup'
 import { observer } from 'mobx-react'
 
 import * as ROUTES from 'constants/routes'
-import AdapterLink from 'components/ui/AdapterLink'
+import AdapterLink from 'components/common/AdapterLink'
 import rootStore from 'stores/rootStore'
 
 //#region Styles
@@ -81,109 +81,102 @@ const AddIdea: React.FC = observer(() => {
     })
   }
 
+  const { hasEditError, editError } = store.ideas
+
   return (
-    <React.Fragment>
-      <Grid
-        container
-        spacing={3}
-        justify="space-between"
-        alignItems="center"
-        className={classes.headerContainer}
-      >
-        <Grid item>
-          <Typography variant="h4">Add your new idea</Typography>
-        </Grid>
-        <Grid item>
-          <Button
-            component={AdapterLink}
-            variant="outlined"
-            color="secondary"
-            to={ROUTES.HOME}
-            disabled={store.ideas.isPending}
-          >
-            Cancel
-          </Button>
-        </Grid>
-      </Grid>
-      <Container maxWidth="md">
-        <div className={classes.formContainer}>
-          <Formik
-            initialValues={{
-              title: '',
-              tagline: '',
-              description: '',
-              url: '',
-            }}
-            validationSchema={ValidationSchema}
-            onSubmit={handleSubmit}
-            render={({ isSubmitting }) => (
-              <Form className={classes.form}>
-                <Field
-                  name="title"
-                  label="Title"
-                  component={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  autoFocus
-                />
+    <div className={classes.formContainer}>
+      <Formik
+        initialValues={{
+          title: '',
+          tagline: '',
+          description: '',
+          url: '',
+        }}
+        validationSchema={ValidationSchema}
+        onSubmit={handleSubmit}
+        render={({ isSubmitting }) => (
+          <Form className={classes.form}>
+            <Field
+              name="title"
+              label="Title"
+              component={TextField}
+              variant="outlined"
+              margin="normal"
+              fullWidth
+            />
 
-                <Field
-                  name="tagline"
-                  label="Tagline"
-                  component={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  multiline
-                />
+            <Field
+              name="tagline"
+              label="Tagline"
+              component={TextField}
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              multiline
+            />
 
-                <Field
-                  name="description"
-                  label="Description"
-                  component={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  rows={8}
-                  fullWidth
-                  multiline
-                />
+            <Field
+              name="description"
+              label="Description"
+              component={TextField}
+              variant="outlined"
+              margin="normal"
+              rows={8}
+              fullWidth
+              multiline
+            />
 
-                <Field
-                  name="url"
-                  label="URL to demo"
-                  component={TextField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                />
+            <Field
+              name="url"
+              label="URL to demo"
+              component={TextField}
+              variant="outlined"
+              margin="normal"
+              fullWidth
+            />
 
-                {isSubmitting && <LinearProgress />}
+            {isSubmitting && <LinearProgress />}
 
-                {store.ideas.hasGeneralError && (
-                  <Typography variant="subtitle1" component="p" color="error">
-                    {store.ideas.generalError}
-                  </Typography>
-                )}
-
-                <Grid
-                  className={classes.formActions}
-                  container
-                  justify="center"
-                  alignItems="center"
-                >
-                  <Grid item>
-                    <Button type="submit" variant="contained" color="primary">
-                      {isSubmitting ? 'Processing...' : 'Add'}
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Form>
+            {hasEditError && (
+              <Typography variant="subtitle1" component="p" color="error">
+                {editError}
+              </Typography>
             )}
-          />
-        </div>
-      </Container>
-    </React.Fragment>
+
+            <Grid
+              className={classes.formActions}
+              container
+              justify="center"
+              alignItems="center"
+              spacing={4}
+            >
+              <Grid item>
+                <Button
+                  component={AdapterLink}
+                  variant="outlined"
+                  color="secondary"
+                  to={ROUTES.HOME}
+                  disabled={isSubmitting}
+                >
+                  Cancel
+                </Button>
+              </Grid>
+
+              <Grid item>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Saving...' : 'Save'}
+                </Button>
+              </Grid>
+            </Grid>
+          </Form>
+        )}
+      />
+    </div>
   )
 })
 

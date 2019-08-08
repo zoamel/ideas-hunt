@@ -8,14 +8,16 @@ import * as ROUTES from 'constants/routes'
 import { history } from 'utils/history'
 import rootStore from 'stores/rootStore'
 import Header from 'components/layout/Header'
-import PrivateRoute from 'components/ui/PrivateRoute'
+import PrivateRoute from 'components/common/PrivateRoute'
+import GlobalMessage from 'components/ui/GlobalMessage'
 
 // Routes
 import Home from 'screens/home/Home'
 import Login from 'screens/login/Login'
 import AddIdea from 'screens/addIdea/AddIdea'
 import ShowIdea from 'screens/showIdea/ShowIdea'
-import GlobalMessage from './components/ui/GlobalMessage'
+import PublicView from 'screens/publicView/PublicView'
+import NotFound from 'screens/notFound/NotFound'
 
 // Styles
 const useStyles = makeStyles((theme: Theme) =>
@@ -29,25 +31,30 @@ const useStyles = makeStyles((theme: Theme) =>
 // Component
 const App: React.FC = observer(() => {
   const classes = useStyles()
-  const { auth: authStore, app: appStore } = useContext(rootStore)
+  const store = useContext(rootStore)
+
+  const { isLoggedIn, logout } = store.auth
+  const { showGlobalError, errorMessage, closeGlobalError } = store.app
 
   return (
     <Router history={history}>
-      <Header isLoggedIn={authStore.isLoggedIn} onLogout={authStore.logout} />
+      <Header isLoggedIn={isLoggedIn} onLogout={logout} />
 
       <GlobalMessage
-        visible={appStore.showGlobalError}
-        message={appStore.errorMessage}
-        onClose={appStore.closeGlobalError}
+        visible={showGlobalError}
+        message={errorMessage}
+        onClose={closeGlobalError}
       />
 
       <main className={classes.mainContainer}>
-        <Container>
+        <Container maxWidth="md">
           <Switch>
             <PrivateRoute path={ROUTES.HOME} exact component={Home} />
             <PrivateRoute path={ROUTES.ADD_IDEA} exact component={AddIdea} />
-            <Route path={ROUTES.SHOW_IDEA} exact component={ShowIdea} />
+            <PrivateRoute path={ROUTES.SHOW_IDEA} exact component={ShowIdea} />
+            <Route path={ROUTES.PUBLIC_VIEW} exact component={PublicView} />
             <Route path={ROUTES.SIGN_IN} exact component={Login} />
+            <Route component={NotFound} />
           </Switch>
         </Container>
       </main>

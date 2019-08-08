@@ -15,11 +15,13 @@ const PrivateRoute: React.FC<Props> = observer(
   ({ component: Component, ...rest }) => {
     const store = useContext(rootStore)
 
+    const { isLoggedIn } = store.auth
+
     return (
       <Route
         {...rest}
         render={props =>
-          store.auth.isLoggedIn ? (
+          isLoggedIn ? (
             <Component {...props} />
           ) : (
             <Redirect

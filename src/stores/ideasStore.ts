@@ -8,10 +8,11 @@ import { RootStore } from './rootStore'
 
 export class IdeasStore {
   @observable ideas: Idea[] = []
-  @observable idea: Idea | undefined = undefined
+  @observable idea: Idea | null = null
   @observable state: string = 'pending'
-  @observable generalError: string | undefined = undefined
-  @observable votingError: string | undefined = undefined
+  @observable generalError: string | null = null
+  @observable votingError: string | null = null
+  @observable editError: string | null = null
 
   constructor(private rootStore: RootStore) {}
 
@@ -40,9 +41,14 @@ export class IdeasStore {
     return this.state === 'votingError'
   }
 
+  @computed
+  get hasEditError() {
+    return this.state === 'editError'
+  }
+
   @action.bound
   clearSelectedIdea() {
-    this.idea = undefined
+    this.idea = null
   }
 
   getOwnIdeas = flow(function*(this: IdeasStore) {
@@ -52,7 +58,7 @@ export class IdeasStore {
       const { data } = yield IdeasService.getOwnIdeas()
 
       this.ideas = data
-      this.generalError = undefined
+      this.generalError = null
       this.state = 'done'
     } catch ({ error }) {
       this.generalError = error
@@ -66,13 +72,13 @@ export class IdeasStore {
     try {
       yield IdeasService.addIdea(idea)
 
-      this.generalError = undefined
+      this.editError = null
       this.state = 'done'
 
       history.push(ROUTES.HOME)
     } catch (error) {
-      this.state = 'error'
-      this.generalError = error
+      this.state = 'editError'
+      this.editError = error
     }
   })
 
@@ -83,7 +89,7 @@ export class IdeasStore {
       const { data } = yield IdeasService.getIdea(ideaId)
 
       this.idea = data
-      this.generalError = undefined
+      this.generalError = null
       this.state = 'done'
     } catch ({ error }) {
       this.generalError = error
@@ -109,11 +115,11 @@ export class IdeasStore {
         ...ideaPayload,
       } as Idea
 
-      this.generalError = undefined
+      this.editError = null
       this.state = 'done'
     } catch (error) {
-      this.generalError = error
-      this.state = 'error'
+      this.editError = error
+      this.state = 'editError'
     }
   })
 
@@ -123,14 +129,14 @@ export class IdeasStore {
     try {
       yield IdeasService.deleteIdea(this.idea!.ideaId)
 
-      this.idea = undefined
-      this.generalError = undefined
+      this.idea = null
+      this.editError = null
       this.state = 'done'
 
       history.push(ROUTES.HOME)
     } catch (error) {
-      this.generalError = error
-      this.state = 'error'
+      this.editError = error
+      this.state = 'editError'
     }
   })
 

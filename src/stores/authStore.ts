@@ -1,19 +1,18 @@
-import { observable, action, computed, reaction, flow, autorun } from 'mobx'
+import { observable, action, computed, reaction, flow } from 'mobx'
 import isString from 'lodash/isString'
 import get from 'lodash/get'
 
 import { history } from 'utils/history'
 import * as ROUTES from 'constants/routes'
 import { AUTH_TOKEN_NAME } from 'constants/config'
-import { LoginPayload, User } from 'interfaces/user'
+import { LoginPayload } from 'interfaces/user'
 import { UsersService } from 'services/usersService'
 import { RootStore } from './rootStore'
 
 export class AuthStore {
   @observable token = window.localStorage.getItem(AUTH_TOKEN_NAME)
-  @observable user: User | undefined = undefined
-  @observable state: string | undefined = undefined
-  @observable error: string | undefined = undefined
+  @observable state: string | null = null
+  @observable error: string | null = null
 
   constructor(private rootStore: RootStore) {
     reaction(
@@ -21,22 +20,10 @@ export class AuthStore {
       token => {
         if (token) {
           window.localStorage.setItem(AUTH_TOKEN_NAME, token)
-          this.rootStore.user.getUserData()
         } else {
           window.localStorage.removeItem(AUTH_TOKEN_NAME)
         }
       },
-    )
-
-    autorun(
-      reaction => {
-        if (this.isLoggedIn) {
-          this.rootStore.user.getUserData()
-        }
-
-        reaction.dispose()
-      },
-      { delay: 100 },
     )
   }
 
@@ -63,8 +50,9 @@ export class AuthStore {
       const { token } = data
 
       this.token = token
-      this.error = undefined
+      this.error = null
       this.state = 'done'
+
       history.push(ROUTES.HOME)
     } catch (error) {
       let errorMessage: string
@@ -72,7 +60,7 @@ export class AuthStore {
       if (isString(error)) {
         errorMessage = error
       } else {
-        errorMessage = get(error, 'data.general', 'Something wen wrong')
+        errorMessage = get(error, 'data.general', 'Something went wrong')
       }
 
       this.state = 'error'

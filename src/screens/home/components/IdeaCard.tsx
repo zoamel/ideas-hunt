@@ -2,11 +2,11 @@ import React from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import format from 'date-fns/format'
 import { observer } from 'mobx-react'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Avatar from '@material-ui/core/Avatar'
 import Paper from '@material-ui/core/Paper'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography } from '@material-ui/core'
+import Typography from '@material-ui/core/Typography'
 
 import { Idea } from 'interfaces/ideas'
 import * as ROUTES from 'constants/routes'
@@ -16,10 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       minHeight: 75,
-      paddingTop: theme.spacing(2),
-      paddingBottom: theme.spacing(2),
-      paddingLeft: theme.spacing(3),
-      paddingRight: theme.spacing(3),
+      padding: theme.spacing(2, 3),
       marginBottom: theme.spacing(2),
       cursor: 'pointer',
 

@@ -5,9 +5,10 @@ import Button from '@material-ui/core/Button'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 
 import EmptyStateImage from 'assets/user_ideas_empty_state.png'
-import AdapterLink from 'components/ui/AdapterLink'
+import AdapterLink from 'components/common/AdapterLink'
 import * as ROUTES from 'constants/routes'
 
+//#region Styles
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -21,6 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 )
+//#endregion
 
 const EmptyState: React.FC = () => {
   const classes = useStyles()

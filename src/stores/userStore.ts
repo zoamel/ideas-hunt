@@ -5,9 +5,9 @@ import { UsersService } from 'services/usersService'
 import { RootStore } from './rootStore'
 
 export class UserStore {
-  @observable user: User | undefined = undefined
-  @observable state: string | undefined = undefined
-  @observable error: string | undefined = undefined
+  @observable user: User | null = null
+  @observable state: string | null = null
+  @observable error: string | null = null
 
   constructor(private rootStore: RootStore) {}
 

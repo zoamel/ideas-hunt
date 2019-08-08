@@ -1,24 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { observer } from 'mobx-react'
 import { RouteComponentProps } from 'react-router-dom'
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import Grid from '@material-ui/core/Grid'
-import Typography from '@material-ui/core/Typography'
-import CircularProgress from '@material-ui/core/CircularProgress'
 
+import ProgressSpinner from 'components/ui/ProgressSpinner'
+import PageError from 'components/ui/PageError'
 import rootStore from 'stores/rootStore'
 import Edit from './components/Edit'
 import Show from './components/Show'
-
-//#region Styles
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    loader: {
-      marginTop: theme.spacing(2),
-    },
-  }),
-)
-//#endregion
 
 //#region Types
 type MatchParams = {
@@ -29,11 +17,8 @@ type Props = RouteComponentProps<MatchParams>
 //#endregion
 
 const ShowIdea: React.FC<Props> = observer(({ match }) => {
-  const classes = useStyles()
   const store = useContext(rootStore)
   const [editMode, setEditMode] = useState(false)
-
-  const { idea } = store.ideas
 
   useEffect(() => {
     const ideaId = match.params.id as string
@@ -41,6 +26,8 @@ const ShowIdea: React.FC<Props> = observer(({ match }) => {
     store.ideas.getIdea(ideaId)
     //eslint-disable-next-line
   }, [])
+
+  const { idea, isPending, hasGeneralError, generalError } = store.ideas
 
   function handleStartEditMode() {
     setEditMode(true)
@@ -50,26 +37,12 @@ const ShowIdea: React.FC<Props> = observer(({ match }) => {
     setEditMode(false)
   }
 
-  if (store.ideas.isPending) {
-    return (
-      <Grid container alignItems="center" justify="center">
-        <Grid item>
-          <CircularProgress className={classes.loader} />
-        </Grid>
-      </Grid>
-    )
+  if (isPending) {
+    return <ProgressSpinner />
   }
 
-  if (store.ideas.hasGeneralError) {
-    return (
-      <Grid container alignItems="center" justify="center">
-        <Grid item>
-          <Typography color="error" variant="h5" component="p">
-            {store.ideas.generalError}
-          </Typography>
-        </Grid>
-      </Grid>
-    )
+  if (hasGeneralError) {
+    return <PageError message={generalError} />
   }
 
   if (!idea) {

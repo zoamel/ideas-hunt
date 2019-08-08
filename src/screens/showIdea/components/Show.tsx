@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { observer } from 'mobx-react'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import Link from '@material-ui/core/Link'
 import Button from '@material-ui/core/Button'
 import Container from '@material-ui/core/Container'
@@ -10,14 +11,18 @@ import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
-import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp'
-import ThumbUpIcon from '@material-ui/icons/ThumbUp'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import IconButton from '@material-ui/core/IconButton'
+import MoreVertIcon from '@material-ui/icons/MoreVert'
+import LaunchIcon from '@material-ui/icons/Launch'
+import Paper from '@material-ui/core/Paper'
+import Tooltip from '@material-ui/core/Tooltip'
 
 import * as ROUTES from 'constants/routes'
 import rootStore from 'stores/rootStore'
 import { Idea } from 'interfaces/ideas'
-import AdapterLink from 'components/ui/AdapterLink'
-import { createStyles, makeStyles, Theme } from '@material-ui/core'
+import AdapterLink from 'components/common/AdapterLink'
 
 //#region Styles
 const useStyles = makeStyles((theme: Theme) =>
@@ -25,8 +30,13 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       paddingTop: theme.spacing(3),
     },
-    upvoteIcon: {
-      marginLeft: theme.spacing(1),
+    paperActions: {
+      marginTop: theme.spacing(2),
+      padding: theme.spacing(1, 3),
+    },
+    paperContainer: {
+      marginTop: theme.spacing(4),
+      padding: theme.spacing(0, 3, 3),
     },
   }),
 )
@@ -43,11 +53,7 @@ const Show: React.FC<Props> = observer(({ idea, onStartEdit }) => {
   const classes = useStyles()
   const store = useContext(rootStore)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-
-  const { user } = store.user
-  const { isLoggedIn } = store.auth
-  const isOwner = user && user.username === idea.username
-  const isNotOwner = user && user.username !== idea.username
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 
   function handleDeleteIdea() {
     store.ideas.deleteIdea()
@@ -61,141 +67,116 @@ const Show: React.FC<Props> = observer(({ idea, onStartEdit }) => {
     setShowDeleteModal(false)
   }
 
-  function handleUpvote() {
-    store.ideas.voteIdea()
+  function handleOpenMenu(event: React.MouseEvent<HTMLButtonElement>) {
+    setAnchorEl(event.currentTarget)
+  }
+
+  function handleCloseMenu() {
+    setAnchorEl(null)
+  }
+
+  function openPublicView() {
+    // TODO: Move this to a modal with copy option
+    window.open(`${ROUTES.PUBLIC_VIEW_BASE}/${idea.ideaId}`)
   }
 
   return (
     <Container maxWidth="md">
-      {isLoggedIn && (
+      <Paper square className={classes.paperActions}>
         <Grid container spacing={3} justify="space-between" alignItems="center">
           <Grid item>
-            <Button
-              component={AdapterLink}
-              variant="outlined"
-              color="secondary"
-              to={ROUTES.HOME}
-            >
+            <Button component={AdapterLink} color="secondary" to={ROUTES.HOME}>
               Go to dashboard
             </Button>
           </Grid>
 
-          {isOwner && (
-            <Grid item>
-              <Grid container spacing={3}>
-                <Grid item>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={onStartEdit}
-                  >
-                    Edit
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleShowDeleteModal}
-                  >
-                    Delete
-                  </Button>
-                  <Dialog
-                    open={showDeleteModal}
-                    onClose={handleCloseDeleteModal}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                  >
-                    <DialogTitle id="alert-dialog-title">
-                      Idea removal
-                    </DialogTitle>
-                    <DialogContent>
-                      <DialogContentText id="alert-dialog-description">
-                        Are you sure you want to delete idea:{' '}
-                        <strong>{idea.title}</strong>
-                      </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                      <Button
-                        onClick={handleCloseDeleteModal}
-                        color="secondary"
-                      >
-                        Cancel
-                      </Button>
-                      <Button onClick={handleDeleteIdea} color="primary">
-                        Confirm
-                      </Button>
-                    </DialogActions>
-                  </Dialog>
-                </Grid>
-              </Grid>
-            </Grid>
-          )}
-
-          {isNotOwner && (
-            <Grid item>
-              <Grid container direction="column" spacing={1}>
-                <Grid item>
-                  <Grid container spacing={1} alignItems="center">
-                    <Grid item>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleUpvote}
-                        disabled={store.ideas.isVoting}
-                      >
-                        {store.ideas.isVoting ? 'Voting...' : 'Upvote'}
-                        <ThumbUpIcon
-                          fontSize="small"
-                          className={classes.upvoteIcon}
-                        />
-                      </Button>
-                    </Grid>
-                    <Grid item>
-                      <Typography variant="h5" color="textSecondary">
-                        {idea.voteCount}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                </Grid>
-                {store.ideas.hasVotingError && (
-                  <Grid item>
-                    <Typography color="error">
-                      {store.ideas.votingError}
-                    </Typography>
-                  </Grid>
-                )}
-              </Grid>
-            </Grid>
-          )}
-        </Grid>
-      )}
-
-      <Grid container spacing={3} direction="column" className={classes.root}>
-        <Grid item>
-          <Typography variant="h4" component="h1">
-            {idea.title}
-          </Typography>
-        </Grid>
-
-        {idea.url && (
           <Grid item>
-            <Link href={idea.url}>{idea.url}</Link>
+            <Grid container spacing={3} alignItems="center">
+              <Grid item>
+                <Tooltip title="Open sharable view">
+                  <IconButton
+                    onClick={openPublicView}
+                    aria-label="Open sharable view"
+                  >
+                    <LaunchIcon />
+                  </IconButton>
+                </Tooltip>
+              </Grid>
+              <Grid item>
+                <IconButton
+                  aria-label="idea menu"
+                  aria-controls="long-menu"
+                  aria-haspopup="true"
+                  onClick={handleOpenMenu}
+                >
+                  <MoreVertIcon />
+                </IconButton>
+              </Grid>
+
+              <Menu
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleCloseMenu}
+              >
+                <MenuItem onClick={onStartEdit}>Edit</MenuItem>
+                <MenuItem onClick={handleShowDeleteModal}>Delete</MenuItem>
+              </Menu>
+
+              <Dialog
+                open={showDeleteModal}
+                onClose={handleCloseDeleteModal}
+                aria-labelledby="dialog-title"
+                aria-describedby="dialog-description"
+              >
+                <DialogTitle id="dialog-title">Idea removal</DialogTitle>
+                <DialogContent>
+                  <DialogContentText id="dialog-description">
+                    Are you sure you want to delete idea:{' '}
+                    <strong>{idea.title}</strong>
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleCloseDeleteModal} color="secondary">
+                    Cancel
+                  </Button>
+                  <Button onClick={handleDeleteIdea} color="primary">
+                    Confirm
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </Grid>
           </Grid>
-        )}
-
-        <Grid item>
-          <Typography variant="h5" component="h2" color="textSecondary">
-            {idea.tagline}
-          </Typography>
         </Grid>
+      </Paper>
 
-        <Grid item>
-          <Typography style={{ whiteSpace: 'pre-line' }}>
-            {idea.description}
-          </Typography>
+      <Paper elevation={2} className={classes.paperContainer}>
+        <Grid container spacing={3} direction="column" className={classes.root}>
+          <Grid item>
+            <Typography variant="h4" component="h1">
+              {idea.title}
+            </Typography>
+          </Grid>
+
+          <Grid item>
+            <Typography variant="h5" component="h2" color="textSecondary">
+              {idea.tagline}
+            </Typography>
+          </Grid>
+
+          <Grid item>
+            <Typography style={{ whiteSpace: 'pre-line' }}>
+              {idea.description}
+            </Typography>
+          </Grid>
+
+          {idea.url && (
+            <Grid item>
+              <Link href={idea.url}>{idea.url}</Link>
+            </Grid>
+          )}
         </Grid>
-      </Grid>
+      </Paper>
     </Container>
   )
 })

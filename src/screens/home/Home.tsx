@@ -1,30 +1,30 @@
 import React, { useContext, useEffect } from 'react'
 import { observer } from 'mobx-react'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
+import Container from '@material-ui/core/Container'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
-import CircularProgress from '@material-ui/core/CircularProgress'
 import HowToVoteIcon from '@material-ui/icons/HowToVote'
 
 import * as ROUTES from 'constants/routes'
 import rootStore from 'stores/rootStore'
-import AdapterLink from 'components/ui/AdapterLink'
+import AdapterLink from 'components/common/AdapterLink'
+import ProgressSpinner from 'components/ui/ProgressSpinner'
+import PageError from 'components/ui/PageError'
 import EmptyState from './components/EmptyState'
 import IdeaCard from './components/IdeaCard'
-import { Container } from '@material-ui/core'
 
+//#region Styles
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    pageTitle: {
-      marginTop: theme.spacing(4),
-    },
     headerContainer: {
       marginTop: theme.spacing(2),
       marginBottom: theme.spacing(4),
     },
   }),
 )
+//#endregion
 
 const Home: React.FC = observer(() => {
   const store = useContext(rootStore)
@@ -36,29 +36,17 @@ const Home: React.FC = observer(() => {
     // eslint-disable-next-line
   }, [])
 
-  if (store.ideas.isPending) {
-    return (
-      <Grid container alignItems="center" justify="center">
-        <Grid item>
-          <CircularProgress />
-        </Grid>
-      </Grid>
-    )
+  const { isPending, hasGeneralError, generalError, ideas } = store.ideas
+
+  if (isPending) {
+    return <ProgressSpinner />
   }
 
-  if (store.ideas.hasGeneralError) {
-    return (
-      <Grid container alignItems="center" justify="center">
-        <Grid item>
-          <Typography variant="h4" component="h2" color="error">
-            {store.ideas.generalError}
-          </Typography>
-        </Grid>
-      </Grid>
-    )
+  if (hasGeneralError) {
+    return <PageError message={generalError} />
   }
 
-  if (store.ideas.ideas.length === 0) {
+  if (ideas.length === 0) {
     return <EmptyState />
   }
 
@@ -91,7 +79,7 @@ const Home: React.FC = observer(() => {
         </Grid>
 
         <Grid item>
-          {store.ideas.ideas.map(idea => (
+          {ideas.map(idea => (
             <IdeaCard key={idea.ideaId} idea={idea} icon={<HowToVoteIcon />} />
           ))}
         </Grid>

@@ -8,6 +8,7 @@ import LinearProgress from '@material-ui/core/LinearProgress'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import Container from '@material-ui/core/Container'
+import Typography from '@material-ui/core/Typography'
 
 import rootStore from 'stores/rootStore'
 import { Idea } from 'interfaces/ideas'
@@ -69,6 +70,8 @@ const Edit: React.FC<Props> = observer(({ idea, onFinishEdit }) => {
     })
   }
 
+  const { editError, hasEditError } = store.ideas
+
   return (
     <Container maxWidth="md">
       <Formik
@@ -89,7 +92,6 @@ const Edit: React.FC<Props> = observer(({ idea, onFinishEdit }) => {
               variant="outlined"
               margin="normal"
               fullWidth
-              autoFocus
             />
 
             <Field
@@ -123,6 +125,12 @@ const Edit: React.FC<Props> = observer(({ idea, onFinishEdit }) => {
             />
 
             {isSubmitting && <LinearProgress />}
+
+            {hasEditError && (
+              <Typography variant="subtitle1" component="p" color="error">
+                {editError}
+              </Typography>
+            )}
 
             <Grid
               className={classes.formActions}

@@ -8,8 +8,12 @@ import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import Container from '@material-ui/core/Container'
 import LinearProgress from '@material-ui/core/LinearProgress'
+import Grid from '@material-ui/core/Grid'
+import Link from '@material-ui/core/Link'
 
 import rootStore from 'stores/rootStore'
+import AdapterLink from 'components/common/AdapterLink'
+import * as ROUTES from 'constants/routes'
 
 //#region Styles
 const useStyles = makeStyles((theme: Theme) =>
@@ -65,6 +69,8 @@ const Login: React.FC = observer(() => {
     })
   }
 
+  const { hasError, error } = store.auth
+
   return (
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
@@ -78,7 +84,6 @@ const Login: React.FC = observer(() => {
             password: '',
           }}
           validationSchema={validationSchema}
-          validateOnBlur={true}
           onSubmit={handleSubmit}
           render={({ isSubmitting }) => (
             <Form className={classes.form}>
@@ -89,7 +94,6 @@ const Login: React.FC = observer(() => {
                 component={TextField}
                 variant="outlined"
                 margin="normal"
-                autoFocus
                 required
                 fullWidth
               />
@@ -107,14 +111,14 @@ const Login: React.FC = observer(() => {
 
               {isSubmitting && <LinearProgress />}
 
-              {store.auth.hasError && (
+              {hasError && (
                 <div className={classes.errorsContainer}>
                   <Typography
                     variant="subtitle1"
                     color="primary"
                     align="center"
                   >
-                    {store.auth.error}
+                    {error}
                   </Typography>
                 </div>
               )}
@@ -130,7 +134,7 @@ const Login: React.FC = observer(() => {
                 {isSubmitting ? 'Signing in...' : 'Sign in'}
               </Button>
 
-              {/* <Grid container>
+              <Grid container>
                 <Grid item>
                   Don't have an account?{' '}
                   <Link
@@ -141,7 +145,7 @@ const Login: React.FC = observer(() => {
                     Sign Up
                   </Link>
                 </Grid>
-              </Grid> */}
+              </Grid>
             </Form>
           )}
         />
