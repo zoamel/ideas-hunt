@@ -5,12 +5,9 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
-import CircularProgress from '@material-ui/core/CircularProgress'
 import Link from '@material-ui/core/Link'
 import Paper from '@material-ui/core/Paper'
 import Container from '@material-ui/core/Container'
-import Fab from '@material-ui/core/Fab'
-import Fade from '@material-ui/core/Fade'
 import ThumbUpIcon from '@material-ui/icons/ThumbUp'
 
 import rootStore from 'stores/rootStore'
@@ -28,10 +25,6 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       paddingTop: theme.spacing(3),
     },
-    likeButtonWrapper: {
-      position: 'relative',
-      marginRight: theme.spacing(2),
-    },
     paperContainer: {
       marginTop: theme.spacing(4),
       padding: theme.spacing(0, 3, 3),
@@ -40,11 +33,22 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(2),
       padding: theme.spacing(3),
     },
+    votesInfoContainer: {
+      paddingTop: theme.spacing(3),
+    },
     errorContainer: {
       marginTop: theme.spacing(2),
     },
     upvoteIcon: {
       marginRight: theme.spacing(1),
+    },
+    votesNumber: {
+      fontWeight: 700,
+      color: theme.palette.primary.dark,
+      fontSize: theme.typography.h4.fontSize,
+    },
+    rightIcon: {
+      marginLeft: theme.spacing(1),
     },
     fabProgress: {
       position: 'absolute',
@@ -74,8 +78,6 @@ const PublicView: React.FC<Props> = observer(({ match }) => {
     isVoting,
     hasGeneralError,
     generalError,
-    hasVotingError,
-    votingError,
   } = store.ideas
 
   const { isLoggedIn } = store.auth
@@ -118,30 +120,18 @@ const PublicView: React.FC<Props> = observer(({ match }) => {
                 <Grid item>
                   <Grid container spacing={1} alignItems="center">
                     <Grid item>
-                      <div className={classes.likeButtonWrapper}>
-                        <Fab
-                          size="small"
-                          color="primary"
-                          aria-label="Upvote"
-                          onClick={handleUpvote}
-                          disabled={isVoting}
-                          className={classes.upvoteIcon}
-                        >
-                          <ThumbUpIcon fontSize="small" />
-                        </Fab>
-                        {isVoting && (
-                          <CircularProgress
-                            size={50}
-                            className={classes.fabProgress}
-                            thickness={3}
-                          />
-                        )}
-                      </div>
-                    </Grid>
-                    <Grid item>
-                      <Typography variant="h5" color="textSecondary">
-                        {idea.voteCount}
-                      </Typography>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleUpvote}
+                        disabled={isVoting}
+                      >
+                        {isVoting ? 'Voting...' : 'Upvote'}
+                        <ThumbUpIcon
+                          fontSize="small"
+                          className={classes.rightIcon}
+                        />
+                      </Button>
                     </Grid>
                   </Grid>
                 </Grid>
@@ -160,18 +150,17 @@ const PublicView: React.FC<Props> = observer(({ match }) => {
         </Grid>
       </Paper>
 
-      <Fade in={hasVotingError}>
-        <Grid
-          container
-          alignItems="center"
-          justify="center"
-          className={classes.errorContainer}
-        >
-          <Grid item>
-            <Typography color="error">{votingError}</Typography>
-          </Grid>
-        </Grid>
-      </Fade>
+      <Grid
+        container
+        alignItems="center"
+        justify="center"
+        className={classes.votesInfoContainer}
+      >
+        <Typography variant="h5" color="textSecondary">
+          Idea liked by{' '}
+          <span className={classes.votesNumber}>{idea.voteCount}</span> people
+        </Typography>
+      </Grid>
 
       <Paper elevation={2} className={classes.paperContainer}>
         <Grid container spacing={3} direction="column" className={classes.root}>

@@ -156,7 +156,7 @@ export class IdeasStore {
       }
     } catch ({ error }) {
       console.error(error)
-      this.votingError = error
+      this.rootStore.app.displayNotification(error, 'error')
       this.state = 'votingError'
     }
   })

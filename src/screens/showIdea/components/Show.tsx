@@ -38,6 +38,14 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(4),
       padding: theme.spacing(0, 3, 3),
     },
+    votesInfoContainer: {
+      paddingTop: theme.spacing(3),
+    },
+    votesNumber: {
+      fontWeight: 700,
+      color: theme.palette.primary.dark,
+      fontSize: theme.typography.h4.fontSize,
+    },
   }),
 )
 //#endregion
@@ -85,9 +93,9 @@ const Show: React.FC<Props> = observer(({ idea, onStartEdit }) => {
       <Paper square className={classes.paperActions}>
         <Grid container spacing={3} justify="space-between" alignItems="center">
           <Grid item>
-            <Button component={AdapterLink} color="secondary" to={ROUTES.HOME}>
-              Go to dashboard
-            </Button>
+            <Typography variant="h5" component="h1">
+              {idea.title}
+            </Typography>
           </Grid>
 
           <Grid item>
@@ -150,14 +158,20 @@ const Show: React.FC<Props> = observer(({ idea, onStartEdit }) => {
         </Grid>
       </Paper>
 
+      <Grid
+        container
+        alignItems="center"
+        justify="center"
+        className={classes.votesInfoContainer}
+      >
+        <Typography variant="h5" color="textSecondary">
+          Idea liked by{' '}
+          <span className={classes.votesNumber}>{idea.voteCount}</span> people
+        </Typography>
+      </Grid>
+
       <Paper elevation={2} className={classes.paperContainer}>
         <Grid container spacing={3} direction="column" className={classes.root}>
-          <Grid item>
-            <Typography variant="h4" component="h1">
-              {idea.title}
-            </Typography>
-          </Grid>
-
           <Grid item>
             <Typography variant="h5" component="h2" color="textSecondary">
               {idea.tagline}

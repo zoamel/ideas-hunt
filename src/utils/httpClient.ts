@@ -28,7 +28,7 @@ function onResponseError(error: AxiosError) {
   }
 
   if (error.message === 'Network Error') {
-    rootStore.app.displayGlobalError('Network Error')
+    rootStore.app.displayNotification('Network Error', 'error')
   } else {
     return Promise.reject(error.message)
   }

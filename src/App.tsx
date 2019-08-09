@@ -9,7 +9,7 @@ import { history } from 'utils/history'
 import rootStore from 'stores/rootStore'
 import Header from 'components/layout/Header'
 import PrivateRoute from 'components/common/PrivateRoute'
-import GlobalMessage from 'components/ui/GlobalMessage'
+import GlobalMessage from 'components/ui/globalMessage/GlobalMessage'
 
 // Routes
 import Home from 'screens/home/Home'
@@ -34,16 +34,22 @@ const App: React.FC = observer(() => {
   const store = useContext(rootStore)
 
   const { isLoggedIn, logout } = store.auth
-  const { showGlobalError, errorMessage, closeGlobalError } = store.app
+  const {
+    showNotification,
+    notificationMessage,
+    notificationType,
+    closeNotification,
+  } = store.app
 
   return (
     <Router history={history}>
       <Header isLoggedIn={isLoggedIn} onLogout={logout} />
 
       <GlobalMessage
-        visible={showGlobalError}
-        message={errorMessage}
-        onClose={closeGlobalError}
+        visible={showNotification}
+        message={notificationMessage}
+        type={notificationType}
+        onClose={closeNotification}
       />
 
       <main className={classes.mainContainer}>
