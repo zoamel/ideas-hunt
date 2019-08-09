@@ -1,15 +1,14 @@
 import React from 'react'
 import { observer } from 'mobx-react'
-import IconButton from '@material-ui/core/IconButton'
 import Snackbar from '@material-ui/core/Snackbar'
-import CloseIcon from '@material-ui/icons/Close'
 
+import { NotificationType } from 'interfaces/app'
 import ContentWrapper from './components/ContentWrapper'
 
 //#region Props
 type Props = {
   visible: boolean
-  type: 'success' | 'warning' | 'error' | 'info'
+  type: NotificationType
   message: string | null
   onClose: () => void
 }

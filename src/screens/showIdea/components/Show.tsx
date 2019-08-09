@@ -22,7 +22,6 @@ import Tooltip from '@material-ui/core/Tooltip'
 import * as ROUTES from 'constants/routes'
 import rootStore from 'stores/rootStore'
 import { Idea } from 'interfaces/ideas'
-import AdapterLink from 'components/common/AdapterLink'
 
 //#region Styles
 const useStyles = makeStyles((theme: Theme) =>
