@@ -14,6 +14,7 @@ import GlobalMessage from 'components/ui/globalMessage/GlobalMessage'
 // Routes
 import Home from 'screens/home/Home'
 import Login from 'screens/login/Login'
+import Signup from 'screens/signup/Signup'
 import AddIdea from 'screens/addIdea/AddIdea'
 import ShowIdea from 'screens/showIdea/ShowIdea'
 import PublicView from 'screens/publicView/PublicView'
@@ -60,6 +61,7 @@ const App: React.FC = observer(() => {
             <PrivateRoute path={ROUTES.SHOW_IDEA} exact component={ShowIdea} />
             <Route path={ROUTES.PUBLIC_VIEW} exact component={PublicView} />
             <Route path={ROUTES.SIGN_IN} exact component={Login} />
+            <Route path={ROUTES.SIGN_UP} exact component={Signup} />
             <Route component={NotFound} />
           </Switch>
         </Container>

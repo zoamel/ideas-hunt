@@ -5,7 +5,7 @@ import get from 'lodash/get'
 import { history } from 'utils/history'
 import * as ROUTES from 'constants/routes'
 import { AUTH_TOKEN_NAME } from 'constants/config'
-import { LoginPayload } from 'interfaces/user'
+import { LoginPayload, SignupPayload } from 'interfaces/user'
 import { UsersService } from 'services/usersService'
 import { RootStore } from './rootStore'
 
@@ -48,6 +48,34 @@ export class AuthStore {
     try {
       const { data } = yield UsersService.login(credentials)
       const { token } = data
+
+      this.token = token
+      this.error = null
+      this.state = 'done'
+
+      history.push(ROUTES.HOME)
+    } catch (error) {
+      let errorMessage: string
+
+      if (isString(error)) {
+        errorMessage = error
+      } else {
+        errorMessage = get(error, 'data.general', 'Something went wrong')
+      }
+
+      this.state = 'error'
+      this.error = errorMessage
+    }
+  })
+
+  signup = flow(function*(this: AuthStore, credentials: SignupPayload) {
+    this.state = 'pending'
+
+    try {
+      const { data } = yield UsersService.signup(credentials)
+      const { token } = data
+
+      debugger
 
       this.token = token
       this.error = null

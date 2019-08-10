@@ -1,4 +1,4 @@
-import { LoginPayload } from 'interfaces/user'
+import { LoginPayload, SignupPayload } from 'interfaces/user'
 import httpClient from 'utils/httpClient'
 
 export const UsersService = {
@@ -6,6 +6,14 @@ export const UsersService = {
     return httpClient.post('/login', {
       email: credentials.email,
       password: credentials.password,
+    })
+  },
+  signup(credentials: SignupPayload) {
+    return httpClient.post('/signup', {
+      email: credentials.email,
+      password: credentials.password,
+      confirmPassword: credentials.confirmPassword,
+      username: credentials.username,
     })
   },
   getUserData() {
