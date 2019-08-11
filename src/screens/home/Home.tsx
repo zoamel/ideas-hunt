@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import { observer } from 'mobx-react'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import Container from '@material-ui/core/Container'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
@@ -51,40 +50,38 @@ const Home: React.FC = observer(() => {
   }
 
   return (
-    <Container component="main" maxWidth="md">
-      <Grid container direction="column" spacing={4}>
-        <Grid item>
-          <Grid
-            container
-            spacing={3}
-            justify="space-between"
-            alignItems="center"
-            className={classes.headerContainer}
-          >
-            <Grid item>
-              <Typography variant="h4">Your Ideas</Typography>
-            </Grid>
+    <Grid container direction="column" spacing={4}>
+      <Grid item>
+        <Grid
+          container
+          spacing={3}
+          justify="space-between"
+          alignItems="center"
+          className={classes.headerContainer}
+        >
+          <Grid item>
+            <Typography variant="h4">Your Ideas</Typography>
+          </Grid>
 
-            <Grid item>
-              <Button
-                component={AdapterLink}
-                variant="contained"
-                color="primary"
-                to={ROUTES.ADD_IDEA}
-              >
-                Add New
-              </Button>
-            </Grid>
+          <Grid item>
+            <Button
+              component={AdapterLink}
+              variant="contained"
+              color="primary"
+              to={ROUTES.ADD_IDEA}
+            >
+              Add New
+            </Button>
           </Grid>
         </Grid>
-
-        <Grid item>
-          {ideas.map(idea => (
-            <IdeaCard key={idea.ideaId} idea={idea} icon={<HowToVoteIcon />} />
-          ))}
-        </Grid>
       </Grid>
-    </Container>
+
+      <Grid item>
+        {ideas.map(idea => (
+          <IdeaCard key={idea.ideaId} idea={idea} icon={<HowToVoteIcon />} />
+        ))}
+      </Grid>
+    </Grid>
   )
 })
 

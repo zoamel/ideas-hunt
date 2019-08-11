@@ -31,7 +31,13 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     paperActions: {
       marginTop: theme.spacing(2),
-      padding: theme.spacing(1, 3),
+      paddingLeft: theme.spacing(3),
+    },
+    actionGridContainer: {
+      paddingRight: theme.spacing(1),
+    },
+    actionGridRightContainer: {
+      paddingRight: 0,
     },
     paperContainer: {
       marginTop: theme.spacing(4),
@@ -90,15 +96,26 @@ const Show: React.FC<Props> = observer(({ idea, onStartEdit }) => {
   return (
     <Container maxWidth="md">
       <Paper square className={classes.paperActions}>
-        <Grid container spacing={3} justify="space-between" alignItems="center">
-          <Grid item>
+        <Grid
+          container
+          spacing={3}
+          justify="space-between"
+          alignItems="center"
+          className={classes.actionGridContainer}
+        >
+          <Grid item xs={12} md={10}>
             <Typography variant="h5" component="h1">
               {idea.title}
             </Typography>
           </Grid>
 
-          <Grid item>
-            <Grid container spacing={3} alignItems="center">
+          <Grid item xs={12} md={2}>
+            <Grid
+              container
+              alignItems="center"
+              justify="flex-end"
+              className={classes.actionGridRightContainer}
+            >
               <Grid item>
                 <Tooltip title="Open sharable view">
                   <IconButton

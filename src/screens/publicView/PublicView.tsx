@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     paperActions: {
       marginTop: theme.spacing(2),
-      padding: theme.spacing(3),
+      padding: theme.spacing(2, 3),
     },
     votesInfoContainer: {
       paddingTop: theme.spacing(3),
@@ -109,16 +109,21 @@ const PublicView: React.FC<Props> = observer(({ match }) => {
     <Container maxWidth="md">
       <Paper square className={classes.paperActions}>
         <Grid container spacing={3} justify="space-between" alignItems="center">
-          <Grid item>
+          <Grid item xs={12} md={10}>
             <Typography variant="h5" component="h1">
               {idea.title}
             </Typography>
           </Grid>
-          <Grid item>
+          <Grid item xs={12} md={2}>
             {isLoggedIn ? (
               <Grid container direction="column" spacing={1}>
                 <Grid item>
-                  <Grid container spacing={1} alignItems="center">
+                  <Grid
+                    container
+                    spacing={1}
+                    alignItems="center"
+                    justify="center"
+                  >
                     <Grid item>
                       <Button
                         variant="contained"
