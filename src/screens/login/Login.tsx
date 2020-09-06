@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { observer } from 'mobx-react'
-import { Formik, Form, Field, FormikActions } from 'formik'
+import { Formik, Form, Field, FormikHelpers } from 'formik'
 import * as Yup from 'yup'
 import { TextField } from 'formik-material-ui'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
@@ -47,9 +47,7 @@ type FormValues = {
 
 //#region Form Validation
 const validationSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Invalid email')
-    .required('Field is required'),
+  email: Yup.string().email('Invalid email').required('Field is required'),
   password: Yup.string()
     .min(6, 'Password is too short')
     .required('Field is required'),
@@ -62,7 +60,7 @@ const Login: React.FC = observer(() => {
 
   function handleSubmit(
     values: FormValues,
-    actions: FormikActions<FormValues>,
+    actions: FormikHelpers<FormValues>,
   ) {
     store.auth.login(values).finally(() => {
       actions.setSubmitting(false)

@@ -7,7 +7,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import { TextField } from 'formik-material-ui'
-import { Formik, Form, Field, FormikActions } from 'formik'
+import { Formik, Form, Field, FormikHelpers } from 'formik'
 import * as Yup from 'yup'
 import { observer } from 'mobx-react'
 
@@ -54,15 +54,13 @@ type FormValues = {
 //#region Form Validation
 const ValidationSchema = Yup.object().shape({
   username: Yup.string().required('Field is required'),
-  email: Yup.string()
-    .email('Invalid email')
-    .required('Field is required'),
+  email: Yup.string().email('Invalid email').required('Field is required'),
   password: Yup.string()
     .min(6, 'Password is too short')
     .required('Field is required'),
   confirmPassword: Yup.string()
-    .nullable()
     .required('Field is required')
+    .nullable()
     .oneOf([Yup.ref('password'), null], 'Passwords must match'),
 })
 //#endregion
@@ -73,7 +71,7 @@ const Signup = observer(() => {
 
   const handleSubmit = (
     values: FormValues,
-    actions: FormikActions<FormValues>,
+    actions: FormikHelpers<FormValues>,
   ) => {
     store.auth.signup(values).finally(() => {
       actions.setSubmitting(false)

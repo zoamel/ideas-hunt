@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import { TextField } from 'formik-material-ui'
-import { Formik, Form, Field, FormikActions } from 'formik'
+import { Formik, Form, Field, FormikHelpers } from 'formik'
 import * as Yup from 'yup'
 import { observer } from 'mobx-react'
 
@@ -73,7 +73,7 @@ const AddIdea: React.FC = observer(() => {
 
   function handleSubmit(
     values: FormValues,
-    actions: FormikActions<FormValues>,
+    actions: FormikHelpers<FormValues>,
   ) {
     store.ideas.addIdea(values).finally(() => {
       actions.setSubmitting(false)

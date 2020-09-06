@@ -1,6 +1,7 @@
 import React from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import format from 'date-fns/format'
+import parseISO from 'date-fns/parseISO'
 import { observer } from 'mobx-react'
 import {
   createStyles,
@@ -50,7 +51,7 @@ const IdeaCard: React.FC<Props> = observer(({ idea, icon, history }) => {
   const classes = useStyles()
   const theme = useTheme()
   const isLowerThanMd = useMediaQuery(theme.breakpoints.down('md'))
-  const updateAtDate = format(idea.updatedAt, 'YYYY-MM-DD HH:mm')
+  const updateAtDate = format(parseISO(idea.updatedAt), 'yyyy-MM-dd HH:mm')
 
   function handleClick() {
     history.push(`${ROUTES.SHOW_IDEA_BASE}/${idea.ideaId}`)
